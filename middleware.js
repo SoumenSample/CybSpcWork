@@ -1,0 +1,52 @@
+import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+
+const rolePathMap = {
+  admin: "/dashboard/admin",
+  client: "/dashboard/client",
+  employee: "/dashboard/employee",
+};
+
+export async function middleware(request) {
+  const { pathname } = request.nextUrl;
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
+  if (pathname === "/login" && token) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  if (pathname.startsWith("/dashboard") && !token) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (pathname.startsWith("/api/users") && token?.role !== "admin") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (pathname.startsWith("/dashboard/admin") && token?.role !== "admin") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  if (pathname.startsWith("/dashboard/client") && token?.role !== "client") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  if (pathname.startsWith("/dashboard/employee") && token?.role !== "employee") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  if (pathname === "/dashboard" && token?.role && rolePathMap[token.role]) {
+    return NextResponse.redirect(new URL(rolePathMap[token.role], request.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/login", "/dashboard/:path*", "/api/users/:path*"],
+};
