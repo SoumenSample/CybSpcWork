@@ -4,6 +4,9 @@ import { z } from "zod";
 import { authOptions } from "@/lib/auth-options";
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/lib/models/User";
+import nodemailer from "nodemailer";
+
+
 
 const createUserSchema = z.object({
   name: z.string().min(2).max(80),
@@ -61,6 +64,36 @@ export async function POST(request) {
     isActive: true,
     createdBy: session.user.id,
   });
+
+
+
+try {
+  const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: Number(process.env.EMAIL_PORT) || 465,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  await transporter.sendMail({
+    from: `"Admin CyberSpace Works" <${process.env.EMAIL_USER}>`,
+    to: created.email,
+    subject: "Your Account Has Been Created",
+    html: `
+      <h2>Welcome to Cyberspce Works, ${created.name}</h2>
+      <p>Your account has been created successfully.</p>
+      <p><b>Email:</b> ${created.email}</p>
+      <p><b>Temporary Password:</b> ${parsed.data.password}</p>
+      <p>Please change your password after login.</p>
+    `,
+  });
+
+} catch (err) {
+  console.error("Email failed:", err);
+}
 
   return Response.json(
     {
