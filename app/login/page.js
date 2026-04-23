@@ -95,7 +95,9 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-4 text-center text-xs text-cyan-100/70">
-            Need access? Please contact your admin.
+            <a href="/forgot-password" style={{ color: "blue" }}>
+  Forgot Password?
+</a>
             <div className="mt-2">
               <Link href="/" className="text-cyan-300 hover:text-cyan-200">
                 Return to homepage
