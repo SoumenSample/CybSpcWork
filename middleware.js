@@ -24,7 +24,14 @@ export async function middleware(request) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (pathname.startsWith("/api/users") && token?.role !== "admin") {
+  const isUsersApi = pathname.startsWith("/api/users");
+  const isUsersListApi = pathname === "/api/users/list";
+
+  if (isUsersApi && !token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (isUsersApi && !isUsersListApi && token?.role !== "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -48,5 +55,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/login", "/dashboard/:path*", "/api/users/:path*"],
+  matcher: ["/login", "/dashboard/:path*", "/api/users"],
 };

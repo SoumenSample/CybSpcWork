@@ -26,10 +26,10 @@ export async function POST(req) {
       return Response.json({ error: "Invalid or expired token" }, { status: 400 });
     }
 
-    // ✅ Hash new password
+    
     user.passwordHash = await bcrypt.hash(password, 12);
 
-    // ✅ Clear token
+  
     user.resetToken = undefined;
     user.resetTokenExpiry = undefined;
 

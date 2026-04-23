@@ -20,7 +20,7 @@ export async function POST(req) {
       return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    // ✅ Generate token
+ 
     const token = crypto.randomBytes(32).toString("hex");
     const expiry = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
 
@@ -28,7 +28,6 @@ export async function POST(req) {
     user.resetTokenExpiry = expiry;
     await user.save();
 
-    // ✅ Send Email
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
