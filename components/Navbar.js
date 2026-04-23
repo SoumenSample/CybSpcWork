@@ -619,6 +619,7 @@ import { SiGoogleanalytics } from "react-icons/si";
 import { signOut, useSession } from "next-auth/react";
 
 export default function Navbar() {
+  // const pathname = usePathname();
   const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(false);
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
@@ -702,6 +703,9 @@ export default function Navbar() {
     return false;
   };
 
+  if (pathname.startsWith("/dashboard")) {
+  return null; // ❌ hide navbar
+}
   return (
     <>
       <header className="w-full fixed top-0 z-50">

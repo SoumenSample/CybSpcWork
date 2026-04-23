@@ -179,6 +179,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   FaFacebookF,
   FaInstagram,
@@ -189,7 +190,11 @@ import {
 import logo from "../public/logo.png";
 
 const Footer = () => {
+    const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+ if (pathname.startsWith("/dashboard")) {
+  return null; // ❌ hide navbar
+ }
 
   return (
     <footer className="bg-black text-white py-8 px-6 sm:px-6">

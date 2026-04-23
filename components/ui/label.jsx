@@ -1,11 +1,23 @@
-import React from "react";
-import { cn } from "@/lib/utils";
+"use client"
 
-export function Label({ className, ...props }) {
+import * as React from "react"
+import { Label as LabelPrimitive } from "radix-ui"
+
+import { cn } from "@/lib/utils"
+
+function Label({
+  className,
+  ...props
+}) {
   return (
-    <label
-      className={cn("mb-1 block text-sm font-medium text-cyan-100", className)}
-      {...props}
-    />
+    <LabelPrimitive.Root
+      data-slot="label"
+      className={cn(
+        "flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+        className
+      )}
+      {...props} />
   );
 }
+
+export { Label }

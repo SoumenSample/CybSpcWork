@@ -5,6 +5,10 @@ import LogoutButton from "@/components/dashboard/LogoutButton";
 export default async function DashboardLayout({ children }) {
   const session = await requireAuth();
 
+  if (session.user.role === "admin") {
+    return <section className="min-h-screen bg-background text-foreground">{children}</section>;
+  }
+
   return (
     <section className="min-h-screen bg-black pt-28 text-cyan-100">
       <div className="mx-auto w-full max-w-6xl px-4 pb-12">
